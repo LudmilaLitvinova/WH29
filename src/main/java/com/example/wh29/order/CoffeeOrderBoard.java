@@ -30,17 +30,13 @@ public class CoffeeOrderBoard {
                             + " готово до видачі");
             orders.remove(0);
         } else {
-            try {
-                throw new RuntimeException("Немає готових до видачі замовлень. ");
-            } catch (RuntimeException e) {
-                log.error("Помилка на стадії видачі", e);
+                log.error("Помилка на стадії видачі: Немає готових до видачі замовлень.");
             }
-        }
+
     }
 
     public void deliver(int number) {
-        if (orders.size() > 0 && orders.stream().map(Order::getNumberOfOrder)
-                .toList().stream().anyMatch(n -> n == number)) {
+        if (checkOrderNumber(number)) {
             for (Order order : orders) {
                 if (order.getNumberOfOrder() == number) {
                     log.info("Замовлення номер " + number + " готово до видачі");
@@ -49,12 +45,8 @@ public class CoffeeOrderBoard {
                 }
             }
         } else {
-            try {
-                throw new RuntimeException("Немає замовлення з номером - " + number);
-            } catch (RuntimeException e) {
-                log.error("Помилка на стадії видачі", e);
+                log.error("Помилка на стадії видачі: Немає замовлення з номером - " + number);
             }
-        }
     }
 
 
@@ -69,5 +61,11 @@ public class CoffeeOrderBoard {
         } else {
             log.info("Замовлення відсутні ");
         }
+    }
+
+
+    private boolean checkOrderNumber(int number){
+        return orders.size() > 0 && orders.stream().map(Order::getNumberOfOrder)
+                .toList().stream().anyMatch(n -> n == number);
     }
 }
